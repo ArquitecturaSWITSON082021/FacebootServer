@@ -7,6 +7,7 @@ import java.util.List;
 import models.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import server.TcpServer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -28,7 +29,10 @@ public class App {
             System.out.println(e.getId() + " " + e.getName() + " " + e.getEmail());
         } */
         
-        User user = DaoProvider.Users.FindFirstById(1);
+        TcpServer server = new TcpServer();
+        server.start(4000);
+        
+        /* User user = DaoProvider.Users.FindFirstById(1);
         System.out.println(user.getId() + " " + user.getName() + " " + user.getEmail());
         
         user = DaoProvider.Users.Craft();
@@ -40,6 +44,6 @@ public class App {
         user.setBornDate(new Date());
         user.setPhone("01223456789");
         boolean result = user.Save();
-        System.out.println(result);
+        System.out.println(result); */
     }
 }
