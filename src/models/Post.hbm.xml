@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 23, 2021 7:39:08 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="models.Post" table="post" catalog="faceboot" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="user" class="models.User" fetch="select">
+            <column name="user_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="userToken" class="models.UserToken" fetch="select">
+            <column name="token_id" not-null="true" />
+        </many-to-one>
+        <property name="uuid" type="string">
+            <column name="uuid" length="100" not-null="true" unique="true" />
+        </property>
+        <property name="text" type="string">
+            <column name="text" length="250" not-null="true" />
+        </property>
+        <property name="updatedAt" type="timestamp">
+            <column name="updated_at" length="19" />
+        </property>
+        <property name="createdAt" type="timestamp">
+            <column name="created_at" length="19" />
+        </property>
+        <property name="deletedAt" type="timestamp">
+            <column name="deleted_at" length="19" />
+        </property>
+        <set name="postHashtags" table="post_hashtag" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="post_id" not-null="true" />
+            </key>
+            <one-to-many class="models.PostHashtag" />
+        </set>
+        <set name="postUserTags" table="post_user_tag" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="post_id" not-null="true" />
+            </key>
+            <one-to-many class="models.PostUserTag" />
+        </set>
+        <set name="postComments" table="post_comment" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="post_id" not-null="true" />
+            </key>
+            <one-to-many class="models.PostComment" />
+        </set>
+        <set name="postAttachments" table="post_attachment" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="post_id" not-null="true" />
+            </key>
+            <one-to-many class="models.PostAttachment" />
+        </set>
+        <set name="postReactions" table="post_reaction" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="post_id" not-null="true" />
+            </key>
+            <one-to-many class="models.PostReaction" />
+        </set>
+    </class>
+</hibernate-mapping>
