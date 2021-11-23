@@ -47,11 +47,19 @@ public final class TcpPeerThread extends Thread {
         }catch(Exception e){}
         byte[] buff = new byte[1024];
         while(isRunning){
+            int dwBytesRead = 0;
             try {
                 Arrays.fill(buff, (byte)0);
-                int dwBytesRead = instream.read(buff, 0, buff.length); // instream.read(buff, 0, buff.length);
-                if (dwBytesRead <= 0)
+                dwBytesRead = instream.read(buff, 0, buff.length);
+            }catch(Exception e){
+                continue;
+            }
+            
+            if (dwBytesRead <= 0)
                     continue;
+            
+            try{
+                
                 
                 packetSize += dwBytesRead;
                 

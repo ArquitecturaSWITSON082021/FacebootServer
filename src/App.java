@@ -22,7 +22,7 @@ import server.TcpServer;
 public class App {
     public static void main(String args[]) throws Exception {
         DaoProvider.Initialize();
-        
+        DaoProvider.Users.FindFirstById(0);
         /* User userDao = new User();
         List<User> users = Dao.users.Find();
         for(User e : users){

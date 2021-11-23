@@ -14,16 +14,14 @@ import FacebootNet.Engine.PacketBuffer;
 public class Router {
     
     public static byte[] Execute(PacketBuffer packet) throws Exception{
+        System.out.printf("[*] hex=%s\n", FacebootNet.Utils.BytesToHex(packet.Serialize()));
         switch(packet.GetOpcode()){
             case FacebootNet.Engine.Opcodes.Hello:
-                System.out.println("Got hello packet!");
                 return controllers.SystemController.FetchServerStatus(packet);
             case FacebootNet.Engine.Opcodes.Login:
-                System.out.println("Got login packet!");
-                return null;
+                return controllers.AuthController.DoLogin(packet);
             case FacebootNet.Engine.Opcodes.DoRegister:
-                System.out.println("Got register packet!");
-                return null;
+                return controllers.AuthController.DoRegister(packet);
         }
         System.out.println("Unknown packet opcode: " + packet.GetOpcode());
         return null;
