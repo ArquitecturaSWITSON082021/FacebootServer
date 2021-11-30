@@ -96,6 +96,9 @@ $RECYCLE.BIN/
 *.msix
 *.msm
 *.msp
+Faceboot
+Faceboot/
+Faceboot/*
 
 # Windows shortcuts
 *.lnk

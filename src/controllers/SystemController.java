@@ -15,8 +15,8 @@ import FacebootNet.Packets.Server.*;
  */
 public class SystemController {
     
-    public static byte[] FetchServerStatus(PacketBuffer req) throws Exception{
-        CHandshakePacket handshake = CHandshakePacket.Deserialize(req.Serialize());
+    public static byte[] FetchServerStatus(byte[] packet) throws Exception{
+        CHandshakePacket handshake = CHandshakePacket.Deserialize(packet);
         SHandshakePacket response = new SHandshakePacket(handshake.GetRequestIndex());
         response.ApplicationVersion = handshake.ApplicationVersion;
         response.IsAuthServiceRunning = true;

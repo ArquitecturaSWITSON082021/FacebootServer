@@ -24,15 +24,13 @@ import router.Router;
  */
 public final class TcpPeerThread extends Thread {
 
-    private TcpServer server;
-    private Socket socket;
+    private TcpPeer peer;
     private boolean isRunning;
     private PacketBuffer packet;
     private int packetSize;
     
-    public TcpPeerThread(TcpServer server, Socket socket) {
-        this.server = server;
-        this.socket = socket;      
+    public TcpPeerThread(TcpPeer peer) {
+        this.peer = peer;    
         this.packet = null;     
         this.packetSize = 0;
     }
@@ -43,8 +41,8 @@ public final class TcpPeerThread extends Thread {
         BufferedInputStream instream = null;
         DataOutputStream outstream = null;
         try{
-            instream = new BufferedInputStream(socket.getInputStream());
-            outstream = new DataOutputStream(socket.getOutputStream());
+            instream = new BufferedInputStream(peer.getSocket().getInputStream());
+            outstream = new DataOutputStream(peer.getSocket().getOutputStream());
         }catch(Exception e){}
         byte[] frameBuff = new byte[Constants.FrameLength];
         while(isRunning){
@@ -68,13 +66,14 @@ public final class TcpPeerThread extends Thread {
                     byte[] buff = new byte[Constants.PacketLength];
                     System.arraycopy(frameBuff, 0, buff, 0, dwBytesRead);
                     packet = new PacketBuffer(buff);
-                }else{
+                    packet.setIdx(dwBytesRead);
+                }else{ 
                     packet.Write(frameBuff, dwBytesRead);
                 }
                 
                 if (packet != null && packetSize == packet.getSize()){
                         // execute packet
-                        byte[] response = Router.Execute(packet, this.socket);
+                        byte[] response = Router.Execute(packet, this.peer);
                         if (response != null){
                             outstream.write(response);
                         }

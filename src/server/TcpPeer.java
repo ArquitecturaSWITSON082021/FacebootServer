@@ -6,6 +6,7 @@
 package server;
 
 import java.net.Socket;
+import models.UserToken;
 
 /**
  *
@@ -18,11 +19,13 @@ public class TcpPeer {
     private TcpPeerThread thread;
     private final Socket socket;
     private long lastHeartbeat;
+    private UserToken token;
     
     public TcpPeer(TcpServer server, Socket socket){
         this.server = server;
         this.socket = socket;
         this.lastHeartbeat = 0L;
+        this.token = null;
     }
     
     public long getLastHeartbeat(){
@@ -50,10 +53,22 @@ public class TcpPeer {
             return false;
         
         this.lastHeartbeat = managers.TimeManager.GetTickCount();
-        this.thread = new TcpPeerThread(server, socket);
+        this.thread = new TcpPeerThread(this);
         this.thread.start();
         
         return true;
+    }
+    
+    public void authenticate(UserToken token){
+        this.token = token;
+    }
+    
+    public UserToken getToken(){
+        return this.token;
+    }
+    
+    public boolean isAuthenticated(){
+        return this.token != null && this.token.getId() > 0;
     }
     
     public boolean kill() throws InterruptedException{

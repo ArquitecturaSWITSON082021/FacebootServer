@@ -15,6 +15,7 @@ import ciphers.HashProvider;
 import java.util.Date;
 import models.User;
 import models.UserToken;
+import server.TcpPeer;
 
 /**
  *
@@ -22,8 +23,8 @@ import models.UserToken;
  */
 public class AuthController {
 
-    public static byte[] DoLogin(PacketBuffer req, String ipAddress) throws Exception {
-        CLoginPacket login = CLoginPacket.Deserialize(req.Serialize());
+    public static byte[] DoLogin(TcpPeer peer, String ipAddress, byte[] packet) throws Exception {
+        CLoginPacket login = CLoginPacket.Deserialize(packet);
         SLoginPacket response = new SLoginPacket(login.GetRequestIndex());
 
         String passwd = HashProvider.sha256.Encrypt(login.Password);
@@ -60,6 +61,7 @@ public class AuthController {
         response.UserBornDate = user.getBornDate().toGMTString();
         response.UserGender = user.getGender();
         response.UserPhone = user.getPhone();
+        peer.authenticate(token);
 
         return response.Serialize();
     }

@@ -5,6 +5,7 @@ import database.MysqlSingleton;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import managers.AttachmentManager;
 import models.User;
 import org.hibernate.Query;
 import org.hibernate.Session;

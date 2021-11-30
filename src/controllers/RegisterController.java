@@ -21,8 +21,8 @@ import models.User;
  * @author Ivy
  */
 public class RegisterController {
-    public static byte[] DoRegister(PacketBuffer req) throws Exception {
-        CRegisterPacket register = CRegisterPacket.Deserialize(req.Serialize());
+    public static byte[] DoRegister(byte[] packet) throws Exception {
+        CRegisterPacket register = CRegisterPacket.Deserialize(packet);
         SRegisterPacket response = new SRegisterPacket(register.GetRequestIndex());
 
         Date bornDate = new SimpleDateFormat("dd/MM/yyyy").parse(register.BornDate);

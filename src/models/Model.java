@@ -62,10 +62,14 @@ public class Model<T> {
         try {
             session = MysqlSingleton.OpenSession();
             tx = session.beginTransaction();
-            if (this.id != null && this.id > 0)
+            if (this.id != null && this.id > 0){
+                updatedAt = new Date();
                 session.update(this);
-            else
+            }else{
+                createdAt = new Date();
+                updatedAt = new Date();
                 session.save(this);
+            }
             tx.commit();
             session.close();
         } catch (Exception e) {
@@ -84,7 +88,7 @@ public class Model<T> {
         try {
             session = MysqlSingleton.OpenSession();
             tx = session.beginTransaction();
-            this.deletedAt = new Date();
+            deletedAt = new Date();
             if (this.id > 0)
                 session.update(this);
             else
