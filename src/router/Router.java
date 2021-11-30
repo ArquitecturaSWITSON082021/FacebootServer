@@ -6,6 +6,7 @@
 package router;
 
 import FacebootNet.Engine.PacketBuffer;
+import java.net.Socket;
 
 /**
  *
@@ -13,13 +14,14 @@ import FacebootNet.Engine.PacketBuffer;
  */
 public class Router {
     
-    public static byte[] Execute(PacketBuffer packet) throws Exception{
-        System.out.printf("[*] hex=%s\n", FacebootNet.Utils.BytesToHex(packet.Serialize()));
+    public static byte[] Execute(PacketBuffer packet, Socket socket) throws Exception{
+        String ipAddress = socket.getInetAddress().getHostAddress();
+        System.out.printf("[*-%s] hex=%s\n", ipAddress, FacebootNet.Utils.BytesToHex(packet.Serialize()));
         switch(packet.GetOpcode()){
             case FacebootNet.Engine.Opcodes.Hello:
                 return controllers.SystemController.FetchServerStatus(packet);
             case FacebootNet.Engine.Opcodes.Login:
-                return controllers.AuthController.DoLogin(packet);
+                return controllers.AuthController.DoLogin(packet, ipAddress);
             case FacebootNet.Engine.Opcodes.DoRegister:
                 return controllers.RegisterController.DoRegister(packet);
         }

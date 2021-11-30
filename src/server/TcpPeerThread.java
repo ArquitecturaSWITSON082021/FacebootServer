@@ -71,7 +71,7 @@ public final class TcpPeerThread extends Thread {
                 
                 if (packet != null && packetSize == packet.getSize()){
                         // execute packet
-                        byte[] response = Router.Execute(packet);
+                        byte[] response = Router.Execute(packet, this.socket);
                         if (response != null){
                             outstream.write(response);
                         }

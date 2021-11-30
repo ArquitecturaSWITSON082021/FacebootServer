@@ -15,10 +15,12 @@ public class DaoProvider {
 
     private static boolean IsInitialized = false;
     public static UsersDao Users;
+    public static TokensDao Tokens;
 
 
     public static boolean Initialize() throws Exception {
         Users = new UsersDao();
+        Tokens = new TokensDao();
         IsInitialized = true;
         return true;
     }
