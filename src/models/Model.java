@@ -67,6 +67,7 @@ public class Model<T> {
             else
                 session.save(this);
             tx.commit();
+            session.close();
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();
@@ -89,6 +90,7 @@ public class Model<T> {
             else
                 throw new Exception("Cannot attempt to delete model if is not in DBMS yet.");
             tx.commit();
+            session.close();
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();

@@ -21,7 +21,7 @@ public class Router {
             case FacebootNet.Engine.Opcodes.Login:
                 return controllers.AuthController.DoLogin(packet);
             case FacebootNet.Engine.Opcodes.DoRegister:
-                return controllers.AuthController.DoRegister(packet);
+                return controllers.RegisterController.DoRegister(packet);
         }
         System.out.println("Unknown packet opcode: " + packet.GetOpcode());
         return null;

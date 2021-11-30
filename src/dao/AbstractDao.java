@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Dao;
+package dao;
 
 import database.MysqlSingleton;
 import java.util.List;
@@ -24,6 +24,7 @@ public class AbstractDao<T> {
         Transaction tx = session.beginTransaction();
         T row = (T)session.get(model_class, id);
         tx.commit();
+        session.close();
         return row;
     }
 
@@ -32,6 +33,7 @@ public class AbstractDao<T> {
         Transaction tx = session.beginTransaction();
         List<T> list = session.createQuery("FROM " + table_name).list();
         tx.commit();
+        session.close();
         return list;
     }
     

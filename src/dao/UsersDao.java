@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Dao;
+package dao;
 
-import Dao.AbstractDao;
+import dao.AbstractDao;
 import database.MysqlSingleton;
 import java.util.List;
 import models.User;

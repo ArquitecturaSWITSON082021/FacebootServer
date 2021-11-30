@@ -1,5 +1,6 @@
 
-import Dao.DaoProvider;
+import ciphers.HashProvider;
+import dao.DaoProvider;
 import database.MysqlSingleton;
 import java.util.Date;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import server.TcpServer;
 public class App {
     public static void main(String args[]) throws Exception {
         DaoProvider.Initialize();
+        HashProvider.Initialize();
         DaoProvider.Users.FindFirstById(0);
         /* User userDao = new User();
         List<User> users = Dao.users.Find();
