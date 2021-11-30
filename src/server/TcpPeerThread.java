@@ -5,6 +5,7 @@
  */
 package server;
 
+import FacebootNet.Constants;
 import FacebootNet.Engine.PacketBuffer;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -45,12 +46,12 @@ public final class TcpPeerThread extends Thread {
             instream = new BufferedInputStream(socket.getInputStream());
             outstream = new DataOutputStream(socket.getOutputStream());
         }catch(Exception e){}
-        byte[] buff = new byte[1024];
+        byte[] frameBuff = new byte[Constants.FrameLength];
         while(isRunning){
             int dwBytesRead = 0;
             try {
-                Arrays.fill(buff, (byte)0);
-                dwBytesRead = instream.read(buff, 0, buff.length);
+                Arrays.fill(frameBuff, (byte)0);
+                dwBytesRead = instream.read(frameBuff, 0, frameBuff.length);
             }catch(Exception e){
                 continue;
             }
@@ -64,9 +65,11 @@ public final class TcpPeerThread extends Thread {
                 packetSize += dwBytesRead;
                 
                 if (packet == null){
+                    byte[] buff = new byte[Constants.PacketLength];
+                    System.arraycopy(frameBuff, 0, buff, 0, dwBytesRead);
                     packet = new PacketBuffer(buff);
                 }else{
-                    packet.Write(buff, dwBytesRead);
+                    packet.Write(frameBuff, dwBytesRead);
                 }
                 
                 if (packet != null && packetSize == packet.getSize()){
