@@ -23,13 +23,15 @@ public class Router {
             case FacebootNet.Engine.Opcodes.Hello:
                 return controllers.SystemController.FetchServerStatus(buf);
             case FacebootNet.Engine.Opcodes.Login:
-                return controllers.AuthController.DoLogin(peer, ipAddress, buf);
+                return controllers.AuthController.DoLogin(peer, ipAddress, buf, false);
             case FacebootNet.Engine.Opcodes.DoRegister:
                 return controllers.RegisterController.DoRegister(buf);
             case FacebootNet.Engine.Opcodes.DoPost:
                 return controllers.PostsController.DoPost(peer, buf);
             case FacebootNet.Engine.Opcodes.FetchPosts:
                 return controllers.PostsController.FetchPosts(buf);
+            case FacebootNet.Engine.Opcodes.AttemptOauth:
+                return controllers.AuthController.DoAttemptOauth(peer.getSocketUuid(), buf);
         }
         System.out.println("Unknown packet opcode: " + packet.GetOpcode());
         return null;

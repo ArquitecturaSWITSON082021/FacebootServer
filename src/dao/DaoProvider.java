@@ -18,12 +18,14 @@ public class DaoProvider {
     public static TokensDao Tokens;
     public static PostsDao Posts;
     public static PostsAttachmentsDao PostsAttachments;
+    public static UsersOauthDao UsersOauth;
 
     public static boolean Initialize() throws Exception {
         Users = new UsersDao();
         Tokens = new TokensDao();
         Posts = new PostsDao();
         PostsAttachments = new PostsAttachmentsDao();
+        UsersOauth = new UsersOauthDao();
         IsInitialized = true;
         return true;
     }

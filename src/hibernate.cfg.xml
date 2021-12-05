@@ -54,6 +54,7 @@ Contributor(s):
     <mapping resource="models/UserNotification.hbm.xml"/>
     <mapping resource="models/PostReaction.hbm.xml"/>
     <mapping resource="models/User.hbm.xml"/>
+    <mapping resource="models/UserOauth.hbm.xml"/>
     <mapping resource="models/Post.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

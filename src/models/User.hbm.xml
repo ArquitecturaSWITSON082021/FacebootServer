@@ -29,6 +29,9 @@
         <property name="gender" type="string">
             <column name="gender" length="20" not-null="true" />
         </property>
+        <property name="profilePicturePath" type="string">
+            <column name="profile_picture_path" length="200" />
+        </property>
         <property name="updatedAt" type="timestamp">
             <column name="updated_at" length="19" />
         </property>

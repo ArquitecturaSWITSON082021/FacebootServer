@@ -18,6 +18,7 @@ public class User extends Model<User> implements java.io.Serializable {
     private String passwd;
     private Date bornDate;
     private String gender;
+    private String profilePicturePath;
     private Set userNotifications = new HashSet(0);
     private Set postAttachments = new HashSet(0);
     private Set postReactions = new HashSet(0);
@@ -214,4 +215,13 @@ public class User extends Model<User> implements java.io.Serializable {
         this.postHashtags = postHashtags;
     }
 
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
+    }
+
+    
 }

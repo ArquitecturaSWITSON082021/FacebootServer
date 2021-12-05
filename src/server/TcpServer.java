@@ -83,5 +83,13 @@ public class TcpServer {
     public TcpPeer[] getPeers(){
         return (TcpPeer[])peers.toArray();
     }
+    
+    public TcpPeer findPeerByUuid(String uuid){
+        for(TcpPeer peer : peers){
+            if (peer.getSocketUuid().equals(uuid))
+                return peer;
+        }
+        return null;
+    }
 
 }

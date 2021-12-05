@@ -9,12 +9,19 @@ import FacebootNet.Engine.ErrorCode;
 import static FacebootNet.Engine.ErrorCode.InternalServerError;
 import dao.DaoProvider;
 import FacebootNet.Engine.PacketBuffer;
+import FacebootNet.Packets.Client.CAttemptOauthPacket;
+import FacebootNet.Packets.Client.CLoginOauthPacket;
 import FacebootNet.Packets.Client.CLoginPacket;
+import FacebootNet.Packets.Server.SAttemptOauthPacket;
 import FacebootNet.Packets.Server.SLoginPacket;
 import ciphers.HashProvider;
 import java.util.Date;
 import models.User;
+import models.UserOauth;
 import models.UserToken;
+import oauth.FacebookOauthDecorator;
+import oauth.IBaseOauthDecorator;
+import providers.ConfigProvider;
 import server.TcpPeer;
 
 /**
@@ -23,33 +30,42 @@ import server.TcpPeer;
  */
 public class AuthController {
 
-    public static byte[] DoLogin(TcpPeer peer, String ipAddress, byte[] packet) throws Exception {
-        CLoginPacket login = CLoginPacket.Deserialize(packet);
-        SLoginPacket response = new SLoginPacket(login.GetRequestIndex());
+    public static byte[] DoLogin(TcpPeer peer, String ipAddress, byte[] packet, boolean isOauth) throws Exception {
+        User user = null;
+        SLoginPacket response = new SLoginPacket(0);
+        if (isOauth) {
+            CLoginOauthPacket login = CLoginOauthPacket.Deserialize(packet);
+            UserOauth userOauth = dao.DaoProvider.UsersOauth.FindFirstUserByAccountId(login.OauthType, login.AccountId);
+            if (userOauth == null || userOauth.getId() <= 0) {
+                response.ErrorCode = ErrorCode.InvalidCredentials;
+            }
 
-        String passwd = HashProvider.sha256.Encrypt(login.Password);
-        if (login.Password == null || passwd == null || login.Password.length() <= 0) {
-            response.ErrorCode = ErrorCode.InternalServerError;
-            return response.Serialize();
+            user = dao.DaoProvider.Users.FindFirstById(userOauth.getId());
+        } else {
+            CLoginPacket login = CLoginPacket.Deserialize(packet);
+            String passwd = HashProvider.sha256.Encrypt(login.Password);
+            if (login.Password == null || passwd == null || login.Password.length() <= 0) {
+                response.ErrorCode = ErrorCode.InternalServerError;
+                return response.Serialize();
+            }
+
+            user = DaoProvider.Users.FindFirstUserByEmailPassword(login.Email, passwd);
         }
-
-        User user = DaoProvider.Users.FindFirstUserByEmailPassword(login.Email, passwd);
 
         if (user == null || user.getId() <= 0) {
             response.ErrorCode = ErrorCode.InvalidCredentials;
             return response.Serialize();
         }
-        
+
         // Craft token if everything is OK
-        
         String uuid = HashProvider.sha256.Encrypt(String.format("$@!#@!_token_%d_%s", new Date().getTime(), ipAddress));
         UserToken token = DaoProvider.Tokens.Craft();
         token.setUser(user);
         token.setVigency(new Date());
         token.setUuid(uuid);
         token.setIpAddress(ipAddress);
-        
-        if (!token.Save()){
+
+        if (!token.Save()) {
             response.ErrorCode = ErrorCode.InternalServerError;
             return response.Serialize();
         }
@@ -66,4 +82,18 @@ public class AuthController {
         return response.Serialize();
     }
 
+    public static byte[] DoAttemptOauth(String uuid, byte[] packet) throws Exception {
+        CAttemptOauthPacket request = CAttemptOauthPacket.Deserialize(packet);
+        SAttemptOauthPacket response = new SAttemptOauthPacket(request.GetRequestIndex());
+        IBaseOauthDecorator Oauth;
+        response.OauthType = request.OauthType;
+        if (request.OauthType == FacebootNet.Engine.OauthType.Facebook) {
+            Oauth = new FacebookOauthDecorator();
+        } else {
+            throw new Exception("Not implemented yet.");
+        }
+
+        response.OauthUrl = Oauth.GetOauthUrl(uuid);
+        return response.Serialize();
+    }
 }

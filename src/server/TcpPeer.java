@@ -5,6 +5,9 @@
  */
 package server;
 
+import FacebootNet.Engine.AbstractPacket;
+import ciphers.HashProvider;
+import java.io.DataOutputStream;
 import java.net.Socket;
 import models.UserToken;
 
@@ -15,6 +18,7 @@ import models.UserToken;
 public class TcpPeer {
 
     private int id;
+    private String uuid;
     private final TcpServer server;
     private TcpPeerThread thread;
     private final Socket socket;
@@ -36,8 +40,13 @@ public class TcpPeer {
         return this.id;
     }
     
+    public String getSocketUuid(){
+        return this.uuid;
+    }
+    
     public void setSocketId(int id){
         this.id = id;
+        this.uuid = HashProvider.sha256.Encrypt(String.format("tcp_socket_%d_!#@#!@#", id));
     }
     
     public Socket getSocket(){
@@ -65,6 +74,15 @@ public class TcpPeer {
     
     public UserToken getToken(){
         return this.token;
+    }
+    
+    public void write(byte[] packet) throws Exception{
+        DataOutputStream outstream = new DataOutputStream(socket.getOutputStream());
+        outstream.write(packet);
+    }
+    
+    public void write(AbstractPacket packet) throws Exception{
+        write(packet.Serialize());
     }
     
     public boolean isAuthenticated(){

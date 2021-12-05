@@ -15,6 +15,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 import models.User;
+import models.UserOauth;
 
 /**
  *
@@ -52,11 +53,33 @@ public class RegisterController {
 
         response.ErrorCode = result ? 0 : 1;
 
-        if (result) {
-            response.UserId = user.getId();
-            response.UserName = register.UserName;
+        if (!result) {
+            return response.Serialize();
         }
+        
+        response.UserId = user.getId();
+        response.UserName = register.UserName;
+        
+        if (register.Oauth == null || register.Oauth.Id == null){
+            return response.Serialize();
+        }
+        
+        UserOauth userOauth = dao.DaoProvider.UsersOauth.Craft();
+        userOauth.setUserId(user.getId());
+        userOauth.setOauthType(register.Oauth.OauthType);
+        userOauth.setAccountId(register.Oauth.Id);
+        userOauth.setAccountEmail(register.Oauth.Email);
+        userOauth.setAccountFirstName(register.Oauth.FirstName);
+        userOauth.setAccountLastName(register.Oauth.LastName);
+        userOauth.setAccountGender(register.Oauth.Gender);
 
+        result = userOauth.Save();
+        response.ErrorCode = result ? 0 : 2;
+
+        if (!result) {
+            return response.Serialize();
+        }
+        
         return response.Serialize();
     }
 }
