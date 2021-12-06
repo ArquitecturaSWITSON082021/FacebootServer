@@ -12,13 +12,14 @@ import java.security.NoSuchAlgorithmException;
  *
  * @author Ivy
  */
-public class Sha256 implements IHash {
+public class Md5 implements IHash {
 
     @Override
     public byte[] Encrypt(byte[] data) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            return digest.digest(data);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(data);
+            return md.digest();
         } catch (NoSuchAlgorithmException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -29,20 +30,21 @@ public class Sha256 implements IHash {
     @Override
     public String Encrypt(String data) {
         byte[] result = this.Encrypt(data.getBytes());
-        if (result == null)
-             return null;
-        
+        if (result == null) {
+            return null;
+        }
+
         return FacebootNet.Utils.BytesToHex(result).toLowerCase();
     }
 
     @Override
     public byte[] Decrypt(byte[] data) {
-        throw new UnsupportedOperationException("SHA-256 does not support this method."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("MD5 does not support this method."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String Decrypt(String data) {
-        throw new UnsupportedOperationException("SHA-256 does not support this method."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("MD5 does not support this method."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

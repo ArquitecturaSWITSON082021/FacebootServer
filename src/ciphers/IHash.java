@@ -9,13 +9,9 @@ package ciphers;
  *
  * @author Ivy
  */
-public class HashProvider {
-    
-    public static Md5 md5;
-    public static Sha256 sha256;
-    
-    public static void Initialize(){
-        sha256 = new Sha256();
-        md5 = new Md5();
-    }
+public interface IHash {
+    public byte[] Encrypt(byte[] data);
+    public String Encrypt(String data);
+    public byte[] Decrypt(byte[] data);
+    public String Decrypt(String data);
 }

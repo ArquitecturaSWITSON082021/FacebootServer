@@ -21,6 +21,7 @@ import models.UserOauth;
 import models.UserToken;
 import oauth.FacebookOauthDecorator;
 import oauth.IBaseOauthDecorator;
+import oauth.TwitterOauthDecorator;
 import providers.ConfigProvider;
 import server.TcpPeer;
 
@@ -35,12 +36,13 @@ public class AuthController {
         SLoginPacket response = new SLoginPacket(0);
         if (isOauth) {
             CLoginOauthPacket login = CLoginOauthPacket.Deserialize(packet);
+            System.out.printf("oauth_Type=%d, id=%s\n", login.OauthType, login.AccountId);
             UserOauth userOauth = dao.DaoProvider.UsersOauth.FindFirstUserByAccountId(login.OauthType, login.AccountId);
             if (userOauth == null || userOauth.getId() <= 0) {
                 response.ErrorCode = ErrorCode.InvalidCredentials;
             }
 
-            user = dao.DaoProvider.Users.FindFirstById(userOauth.getId());
+            user = dao.DaoProvider.Users.FindFirstById(userOauth.getUserId());
         } else {
             CLoginPacket login = CLoginPacket.Deserialize(packet);
             String passwd = HashProvider.sha256.Encrypt(login.Password);
@@ -89,10 +91,13 @@ public class AuthController {
         response.OauthType = request.OauthType;
         if (request.OauthType == FacebootNet.Engine.OauthType.Facebook) {
             Oauth = new FacebookOauthDecorator();
+        } else if (request.OauthType == FacebootNet.Engine.OauthType.Twitter){
+            Oauth = new TwitterOauthDecorator();
         } else {
             throw new Exception("Not implemented yet.");
         }
 
+        
         response.OauthUrl = Oauth.GetOauthUrl(uuid);
         return response.Serialize();
     }

@@ -22,6 +22,17 @@ public class OauthUserInfo {
     public String gender;
     public String birthday;
     
+    public OauthUserInfo(){
+        id = "";
+        name = "";
+        email = "";
+        firstName = "";
+        lastName = "";
+        profilePicture = new byte[0];
+        gender = "";
+        birthday = "";
+    }
+    
     public void mapPacket(int oAuthType, SOauthPacket packet){
         packet.OauthType = oAuthType;
         packet.Id = id;
@@ -30,10 +41,15 @@ public class OauthUserInfo {
         packet.FirstName = firstName;
         packet.LastName = lastName;
         packet.Gender = gender;
+        packet.BirthMonth = 0;
+        packet.BirthDay = 0;
+        packet.BirthYear =0 ;
+        if (birthday != null && birthday.length() > 0){
         String[] dates = birthday.split("\\/");
         packet.BirthMonth = Short.parseShort(dates[0], 10);
         packet.BirthDay = Short.parseShort(dates[1], 10);
         packet.BirthYear = Short.parseShort(dates[2], 10);
+        }
     }
 
     @Override

@@ -10,8 +10,8 @@ package ciphers;
  * @author Ivy
  */
 public interface ICipher {
-    public byte[] Encrypt(byte[] data);
-    public String Encrypt(String data);
-    public byte[] Decrypt(byte[] data);
-    public String Decrypt(String data);
+    public byte[] Encrypt(byte[] data, byte[] password);
+    public String Encrypt(String data, String password);
+    public byte[] Decrypt(byte[] data, byte[] password);
+    public String Decrypt(String data, String password);
 }

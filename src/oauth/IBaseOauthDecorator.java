@@ -14,10 +14,10 @@ public interface IBaseOauthDecorator {
     public String GetOauthUrl(String connection_id) throws Exception;
 
     // Returns an user access token, given code.
-    public String GetUserAccessToken(String code) throws Exception;
+    public OauthToken GetUserAccessToken(String code, String secret) throws Exception;
     
     // Returns an user oauth info, based on the given code.
-    public OauthUserInfo GetUserInfo(String code) throws Exception;
+    public OauthUserInfo GetUserInfo(String code, String secret) throws Exception;
     
-    public models.User GetUserByOauthCode(String code) throws Exception;
+    public models.User GetUserByOauthCode(String code, String secret) throws Exception;
 }

@@ -1,6 +1,7 @@
 package bootstrap;
 
 
+import ciphers.CipherProvider;
 import ciphers.HashProvider;
 import dao.DaoProvider;
 import database.MysqlSingleton;
@@ -14,6 +15,8 @@ import java.util.List;
 import managers.AttachmentManager;
 import models.User;
 import oauth.FacebookOauthDecorator;
+import oauth.IBaseOauthDecorator;
+import oauth.TwitterOauthDecorator;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import providers.ConfigProvider;
@@ -42,9 +45,13 @@ public class App {
             System.out.println("[-] Could not initialize config. Make sure you've .env file on main path.");
             return;
         }
+        
+        HashProvider.Initialize();
+        CipherProvider.Initialize();
+        
         DaoProvider.Initialize();
         DaoProvider.UsersOauth.FindFirstUserByAccountId(0, "");
-        HashProvider.Initialize();
+        
         
         // Spawn HTTPS server, for oAuth purposes.
         HttpsOauthServer http = new HttpsOauthServer(5000);

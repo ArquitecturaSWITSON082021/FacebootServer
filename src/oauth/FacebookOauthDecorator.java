@@ -35,21 +35,25 @@ public class FacebookOauthDecorator extends AbstractOauthDecorator implements IB
     }
     
     @Override
-    public String GetUserAccessToken(String code) throws Exception{
+    public OauthToken GetUserAccessToken(String code, String secret) throws Exception{
         String url = String.format("/oauth/access_token?client_id=%s&client_secret=%s&redirect_uri=%s&code=%s",
                 clientId, clientSecret, redirectUri, code);
         JSONObject json = new JSONObject(Get(url));
         String accessToken = json.getString("access_token");
         if (accessToken == null || accessToken.length() <= 0)
             throw new Exception("Got invalid access token.");
-        return accessToken;
+        
+        OauthToken token = new OauthToken();
+        token.Token = accessToken;
+        token.Secret = "";
+        return token;
     }
     
     @Override
-    public OauthUserInfo GetUserInfo(String code) throws Exception{
-        String access_token = GetUserAccessToken(code);
+    public OauthUserInfo GetUserInfo(String code, String secret) throws Exception{
+        OauthToken access_token = GetUserAccessToken(code, "");
         String url = String.format("/v12.0/me?access_token=%s&fields=id,name,email,first_name,last_name,hometown,picture.type(large){url,is_silhouette},gender,birthday",
-                access_token);
+                access_token.Token);
         JSONObject json = new JSONObject(Get(url));
         OauthUserInfo user = new OauthUserInfo();
         user.id = json.getString("id");
@@ -72,8 +76,8 @@ public class FacebookOauthDecorator extends AbstractOauthDecorator implements IB
     }
     
     @Override
-    public models.User GetUserByOauthCode(String code) throws Exception {
-        OauthUserInfo info = GetUserInfo(code);
+    public models.User GetUserByOauthCode(String code, String secret) throws Exception {
+        OauthUserInfo info = GetUserInfo(code, "");
         UserOauth userOauth =  dao.DaoProvider.UsersOauth.FindFirstUserByAccountId(oAuthType, info.id);
         if (userOauth == null || userOauth.getUserId() <= 0)
             return null;
